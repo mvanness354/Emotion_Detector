@@ -1,3 +1,73 @@
+import torch.nn as nn
+from torch.nn import init
+import torch.optim as optim
+
+from torch.utils.data import Dataset, DataLoader, SubsetRandomSampler
+from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
+
+from tqdm.notebook import tqdm, trange
+
+
+emotion_to_idx = {
+    "anger": 0,
+    "fear": 1,
+    "joy": 2,
+    "love": 3,
+    "sadness": 4,
+    "surprise": 5,
+}
+idx_to_emotion = {v: k for k, v in emotion_to_idx.items()}
+UNK = "<UNK>"
+
+def fetch_data(train_data_path, val_data_path, test_data_path):
+    """fetch_data retrieves the data from a json/csv and outputs the validation
+    and training data
+
+    :param train_data_path:
+    :type train_data_path: str
+    :return: Training, validation pair where the training is a list of document, label pairs
+    :rtype: Tuple[
+        List[Tuple[List[str], int]],
+        List[Tuple[List[str], int]],
+        List[List[str]]
+    ]
+    """
+    with open(train_data_path) as training_f:
+        training = training_f.read().split("\n")[1:-1]
+    with open(val_data_path) as valid_f:
+        validation = valid_f.read().split("\n")[1:-1]
+    with open(test_data_path) as testing_f:
+        testing = testing_f.read().split("\n")[1:-1]
+    
+    # If needed you can shrink the training and validation data to speed up somethings but this isn't always safe to do by setting k < 10000
+    # k = #fill in
+    # training = random.shuffle(training)
+    # validation = random.shuffle(validation)
+    # training, validation = training[:k], validation[:(k // 10)]
+
+    tra = []
+    val = []
+    test = []
+    for elt in training:
+        if elt == '':
+            continue
+        txt, emotion = elt.split(",")
+        tra.append((txt.split(" "), emotion_to_idx[emotion]))
+    for elt in validation:
+        if elt == '':
+            continue
+        txt, emotion = elt.split(",")
+        val.append((txt.split(" "), emotion_to_idx[emotion]))
+    for elt in testing:
+        if elt == '':
+            continue
+        txt = elt
+        test.append(txt.split(" "))
+
+    return tra, val, test
+
+
+
 
 def rnn_preprocessor(data, max_seq_len, embed_model, test=False):
 
