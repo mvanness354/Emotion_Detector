@@ -1,11 +1,10 @@
+import torch
 import torch.nn as nn
 from torch.nn import init
-import torch.optim as optim
 
 from torch.utils.data import Dataset, DataLoader, SubsetRandomSampler
-from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 
-from tqdm.notebook import tqdm, trange
+from tqdm import tqdm, trange
 
 
 emotion_to_idx = {
@@ -18,6 +17,17 @@ emotion_to_idx = {
 }
 idx_to_emotion = {v: k for k, v in emotion_to_idx.items()}
 UNK = "<UNK>"
+
+def max_sequence_length(train, test, val):
+  length = 0
+  for dataset in [train,val,test]:
+    for document in dataset:
+      if len(document)>length:
+        length = len(document)
+  return length 
+
+def all_zeros(x):
+  return torch.all(x.eq(torch.zeros(x.shape)))
 
 def fetch_data(train_data_path, val_data_path, test_data_path):
     """fetch_data retrieves the data from a json/csv and outputs the validation

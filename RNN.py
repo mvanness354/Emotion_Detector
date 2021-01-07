@@ -1,3 +1,10 @@
+import torch
+import torch.nn as nn
+from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
+
+
+get_device = lambda : "cuda:0" if torch.cuda.is_available() else "cpu"
+
 class RNN(nn.Module):
   def __init__(self, input_dim, hidden_dim, output_dim, n_layers=1, non_linearity="relu", lstm=False):
     super(RNN, self).__init__()
