@@ -1,5 +1,7 @@
 h: 512
 num_layers: 1
-num_epochs: 10
 non_linearity: "relu"
+lstm: False
+learning_rate: 0.0001
+num_epochs: 10
 batch_size: 16

@@ -104,9 +104,11 @@ n_layers = params["num_layers"]
 output_dim = len(emotion_to_idx)
 n_epochs = params["num_epochs"]
 non_linearity = params["non_linearity"]
+lstm = params["lstm"]
 batch_size = params["batch_size"]
+learning_rate=params["learning_rate"]
 
 rnn_train_loader, rnn_val_loader =  get_data_loaders_rnn(train_vectorized_rnn, val_vectorized_rnn, batch_size=batch_size)
 
-model = RNN(input_dim, h, output_dim, n_layers, non_linearity=non_linearity).to(get_device())
-train_and_evaluate_rnn(n_epochs, model, rnn_train_loader, rnn_val_loader, learning_rate=0.0001, verbose=True)
+model = RNN(input_dim, h, output_dim, n_layers, non_linearity=non_linearity, lstm=lstm).to(get_device())
+train_and_evaluate_rnn(n_epochs, model, rnn_train_loader, rnn_val_loader, learning_rate=learning_rate, verbose=True)
