@@ -1,4 +1,4 @@
 torch
 torchtext
 tqdm
-yaml
+pyyaml
