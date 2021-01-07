@@ -6,6 +6,8 @@ import torch.optim as optim
 
 from tqdm import tqdm, trange
 
+import yaml
+
 
 emotion_to_idx = {
     "anger": 0,
@@ -89,13 +91,20 @@ train_vectorized_rnn = rnn_preprocessor(train, max_length, embed_model)
 val_vectorized_rnn = rnn_preprocessor(val, max_length, embed_model)
 test_vectorized_rnn = rnn_preprocessor(test, max_length, embed_model, test=True)
 
-h=512
+
+# Read in params from yml
+with open("params.yml") as f:
+	params = yaml.full_load(f)
+
+
+
+h = params["h"]
 input_dim = len(train_vectorized_rnn[0][0][0])
-n_layers = 1
+n_layers = params["num_layers"]
 output_dim = len(emotion_to_idx)
-n_epochs = 50
-non_linearity = "relu"
-batch_size = 16
+n_epochs = params["num_epochs"]
+non_linearity = params["non_linearity"]
+batch_size = params["batch_size"]
 
 rnn_train_loader, rnn_val_loader =  get_data_loaders_rnn(train_vectorized_rnn, val_vectorized_rnn, batch_size=batch_size)
 

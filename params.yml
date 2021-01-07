@@ -1,0 +1,5 @@
+h: 512
+num_layers: 1
+num_epochs: 10
+non_linearity: "relu"
+batch_size: 16
